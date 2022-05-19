@@ -1,42 +1,119 @@
-import React, { Fragment } from 'react'
-import styles from './index.less'
-import { Button } from 'antd';
+import React, { Fragment, Component } from 'react'
+import { Route, Link } from 'react-router-dom';
+import { Button, Table, Tag, Space } from 'antd';
+import CheckWorkTable from './work_detail/table'
 
-export default function CheckWork() {
-  return (
-    <Fragment>
-      <h1>作业详情</h1>
-      <div className={styles.tab}>
-        <table border="1">
-          <tr>
-            <td>作业题目</td>
-            <td>自我介绍</td>
-          </tr>
-          <tr>
-            <td>作业要求1</td>
-            <td>个人信息</td>
-          </tr>
-          <tr>
-            <td>作业要求2</td>
-            <td>自我介绍</td>
-          </tr>
-          <tr>
-            <td>参考答案</td>
-            <td>自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍自我介绍</td>
-          </tr>
-          <tr>
-            <td>评分标准1</td>
-            <td>自我介绍</td>
-          </tr>
-          <tr>
-            <td>评分标准2</td>
-            <td>自我介绍</td>
-          </tr>
-        </table>
-        <Button type="primary" className={styles.btn}>点击上传</Button>
-      </div>
+import { connect } from 'dva';
 
-    </Fragment>
+@connect(({ findwork, loading }) => ({
+  findwork,
+  loading: loading.models.findwork
+}))
+export default class CheckWork extends Component {
+  state = {
+    workData: []
+  }
+  componentDidMount() {
+    const { dispatch } = this.props
 
-  )
+    dispatch({
+      type: 'findwork/fetch',
+    }).then(() => {
+      this.setState({
+        workData: this.props.findwork.workData
+      })
+    })
+  }
+  openDetail = (id) => {
+    window.open('/checkwork/info?id=' + id, '_blank')
+  }
+  render() {
+    const delWork = id => {
+      const { dispatch } = this.props
+
+      dispatch({
+        type: 'findwork/delfetch',
+        payload: {
+          id
+        }
+      }).then(() => {
+        dispatch({
+          type: 'findwork/fetch',
+        }).then(() => {
+          this.setState({
+            workData: this.props.findwork.workData
+          })
+        })
+      })
+    }
+    const columns = [
+      {
+        title: '作业题目',
+        dataIndex: 'work_title',
+        key: 'work_title',
+        render: (text, record) => (
+          <div>
+            <a onClick={() => {
+              this.openDetail(record.work_id)
+            }}>{text}</a>
+          </div>
+        ),
+        width: '20%'
+      },
+      {
+        title: '年级',
+        dataIndex: 'state',
+        key: 'state',
+        width: '10%'
+      },
+      {
+        title: '学院',
+        dataIndex: 'institute',
+        key: 'institute',
+        width: '15%'
+
+      },
+      {
+        title: '班级',
+        dataIndex: 'studentClass',
+        key: 'studentClass',
+        width: '15%'
+      },
+      {
+        title: '作业要求',
+        dataIndex: 'request_1',
+        key: 'request_1',
+        width: '15%'
+      },
+      {
+        title: '作业标准',
+        dataIndex: 'standard',
+        key: 'standard',
+        width: '15%'
+      },
+      {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        render: (text, record) => (
+          <Space size="middle">
+            <a onClick={e => delWork(record.work_id)}>删除</a>
+          </Space>
+        )
+      }
+
+    ];
+
+
+    return (
+      <Fragment>
+        <h1 style={{ height: "72px", fontWeight: 700, margin: '20px' }}>作业详情</h1>
+        <Table columns={columns} dataSource={this.state.workData} />;
+
+        {/* <CheckWorkTable /> */}
+
+      </Fragment>
+    )
+  }
 }
+

@@ -62,6 +62,11 @@ export default [
     component: './CheckWork',
   },
   {
+    path: '/checkwork/info',
+    component: './CheckWork/work_detail/table'
+  },
+
+  {
     name: 'workmutual',
     icon: 'table',
     path: '/workmutual',

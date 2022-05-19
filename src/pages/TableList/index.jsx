@@ -1,7 +1,18 @@
 import React, { Fragment, useState, Component } from 'react';
 import { connect } from 'dva';
-import { Table, Input, InputNumber, Popconfirm, Form, Typography } from 'antd';
+import { Table, Input, Popconfirm, Form, Typography, Button, Select } from 'antd';
 import styles from './index.less'
+import { login } from '@/services/ant-design-pro/api';
+import Addstudent from './form'
+
+
+const { nanoid } = require('nanoid')
+
+const { Search } = Input
+const { Option } = Select
+
+//2022-05-07
+//目前有两个问题：1.分页器 2.目前编辑模块采用的是studentId当作key 3.查询只能查全名(可以后端配正则)
 
 @connect(({ infostudent, loading }) => ({
     infostudent,
@@ -9,6 +20,14 @@ import styles from './index.less'
 }))
 
 export default class TableList extends Component {
+    constructor() {
+        super()
+        this.state = {
+            showAdd: false,
+            dataAdd: [],
+        }
+    }
+
     componentDidMount() {
 
         const { dispatch } = this.props
@@ -17,7 +36,6 @@ export default class TableList extends Component {
             type: 'infostudent/fetch',
         })
     }
-
     render() {
 
         const EditableCell = ({
@@ -67,13 +85,13 @@ export default class TableList extends Component {
             const [data, setData] = useState(originData);
             const [editingKey, setEditingKey] = useState('');
 
-            const isEditing = (record) => record.key === editingKey;
+            const isEditing = (record) => record.studentId === editingKey;
 
             const edit = (record) => {
                 form.setFieldsValue({
                     ...record,
                 });
-                setEditingKey(record.key);
+                setEditingKey(record.studentId);
             };
 
 
@@ -86,7 +104,7 @@ export default class TableList extends Component {
                 try {
                     const row = await form.validateFields();
                     const newData = [...data];
-                    const index = newData.findIndex((item) => key === item.key);
+                    const index = newData.findIndex((item) => key === item.studentId);
 
                     if (index > -1) {
                         const item = newData[index];
@@ -98,7 +116,27 @@ export default class TableList extends Component {
                         setData(newData);
                         setEditingKey('');
                     }
-                    //newData：更新过的数据
+
+                    const values = []
+                    newData.map(item => {
+                        if (item.IdCard === row.IdCard) values.push(item)
+                    })
+
+                    //console.log(values);
+
+                    const { dispatch } = this.props
+
+                    dispatch({
+                        type: 'infostudent/fetchUpd',
+                        payload: {
+                            //更改的那条数据
+                            values
+                        }
+                    }).then(() => {
+                        dispatch({
+                            type: 'infostudent/fetch',
+                        })
+                    })
 
 
 
@@ -115,10 +153,10 @@ export default class TableList extends Component {
                     payload: {
                         values: record
                     }
-                })
-
-                dispatch({
-                    type: 'infostudent/fetch',
+                }).then(() => {
+                    dispatch({
+                        type: 'infostudent/fetch',
+                    })
                 })
             }
 
@@ -186,7 +224,7 @@ export default class TableList extends Component {
                         return editable ? (
                             <span>
                                 <Typography.Link
-                                    onClick={() => save(record.key)}
+                                    onClick={() => save(record.studentId)}
                                     style={{
                                         marginRight: 8,
                                     }}
@@ -247,16 +285,73 @@ export default class TableList extends Component {
             );
         };
 
+        const onSearch = (value = '') => {
+            console.log(value);
+            const { dispatch } = this.props
+            dispatch({
+                type: 'infostudent/fetchSearch',
+                payload: {
+                    keywords: value
+                }
+            })
+
+        }
+
+        const onClose = (value) => {
+            if (value == true) {
+                this.setState({
+                    showAdd: false
+                })
+            }
+        }
+
+        const getData = (values) => {
+
+            values.studentId = nanoid()
+
+            this.state.dataAdd.push(values)
+
+            const { dispatch } = this.props
+
+            dispatch({
+                type: 'infostudent/fetchAdd',
+                payload: {
+                    values
+                }
+            }).then(() => {
+                dispatch({
+                    type: 'infostudent/fetch',
+                })
+            })
+
+
+
+        }
+
+
         return (
             <Fragment>
                 <h1 className={styles.title}>学生信息查询</h1>
+                <Button
+                    type='primary'
+                    style={{ float: 'right', marginRight: '10px' }}
+                    onClick={() => this.setState({
+                        showAdd: true
+                    })}
+                >添加学生
+                </Button>
+                {
+                    this.state.showAdd == true
+                        ?
+                        <Addstudent showAdd={this.state.showAdd} onClose={onClose} getData={getData}></Addstudent>
+                        :
+                        null
+                }
+                <Search placeholder="请输入学生姓名" onSearch={onSearch} className={styles.ipt} />
                 <EditableTable className={styles.table} />
             </Fragment>
         )
     }
 }
-
-
-
 
 

@@ -69,7 +69,7 @@ const Login = () => {
         id: 'pages.login.failure',
         defaultMessage: '登录失败，请重试！',
       });
-      message.error(defaultLoginFailureMessage);
+      // message.error(defaultLoginFailureMessage);
     }
   };
 
