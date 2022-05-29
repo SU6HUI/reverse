@@ -43,55 +43,81 @@ export default [
       },
     ],
   },
+  //manager
   {
-    name: 'list.table-list',
-    icon: 'table',
     path: '/list',
-    component: './TableList',
+    name: '查询表格',
+    icon: 'table',
+    routes: [
+      {
+        path: '/list/student',
+        name: '学生信息查询',
+        icon: 'smile',
+        component: './TableList/index',
+      },
+      {
+        path: '/list/teacher',
+        name: '教师信息查询',
+        icon: 'smile',
+        component: './TableList/teacher',
+      },
+      {
+        path: '/list/manager',
+        name: '管理员信息查询',
+        icon: 'smile',
+        component: './TableList/manager',
+      },
+    ],
   },
+  //teacher
   {
-    name: 'designwork',
+    name: '设计作业上传',
     icon: 'table',
     path: '/designwork',
     component: './DesignWork',
   },
+  //teacher + student
   {
-    name: 'checkwork',
+    name: '查看作业',
     icon: 'table',
     path: '/checkwork',
     component: './CheckWork',
   },
+  //3
   {
     path: '/checkwork/info',
     component: './CheckWork/work_detail/table'
   },
-
+  //3
   {
-    name: 'workmutual',
+    name: '作业互评',
     icon: 'table',
     path: '/workmutual',
     component: './WorkMutual',
   },
   {
-    name: 'workprocess',
+    name: '评价学生互评内容',
     icon: 'table',
     path: '/workprocess',
     component: './WorkProcess',
   },
+  //3
   {
-    name: 'checkteacher',
+    name: '查看老师评价',
     icon: 'table',
     path: '/checkteacher',
     component: './CheckTeacher',
   },
+  //3
   {
-    name: 'gradeanalysis',
+    name: '成绩分析',
     icon: 'table',
     path: '/gradeanalysis',
     component: './Grade',
   },
+  //3
   {
-    name: 'changepassword',
+    name: '修改密码',
     icon: 'table',
     path: '/changepassword',
     component: './ChangePassword',

@@ -37,7 +37,7 @@ export default class DesignWork extends Component {
         const { dispatch } = this.props
 
         dispatch({
-          type: 'infowork/fetch',
+          type: 'infowork/uploadfetch',
           payload: {
             values
           }
@@ -45,7 +45,6 @@ export default class DesignWork extends Component {
           this.props.infowork.ok == 1 ? message.success('作业上传成功') : message.error('作业上传失败')
         })
 
-        //console.log(values);
       };
 
       const onReset = () => {

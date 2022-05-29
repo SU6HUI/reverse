@@ -3,10 +3,9 @@ import { connect } from 'dva';
 import { Table, Input, Popconfirm, Form, Typography, Button, Select, message } from 'antd';
 import styles from './index.less'
 import { login } from '@/services/ant-design-pro/api';
-import Addstudent from './form'
+import Addteacher from './formteacher'
+import { delteacher, updteacher, addteacher } from '@/services/user'
 import { request } from 'umi';
-import { addstudent, updstudent, delstudent } from '@/services/user'
-import { throttle } from '../_utils/tools'
 
 
 const { nanoid } = require('nanoid')
@@ -14,15 +13,12 @@ const { nanoid } = require('nanoid')
 const { Search } = Input
 const { Option } = Select
 
-//2022-05-07
-//目前有两个问题：1.分页器 2.目前编辑模块采用的是studentId当作key 3.查询只能查全名(可以后端配正则)
-
-@connect(({ infostudent, loading }) => ({
-    infostudent,
-    loading: loading.models.infostudent,
+@connect(({ infoteacher, loading }) => ({
+    infoteacher,
+    loading: loading.models.infoteacher,
 }))
 
-export default class TableList extends Component {
+export default class TableList_teacher extends Component {
     constructor() {
         super()
         this.state = {
@@ -36,7 +32,7 @@ export default class TableList extends Component {
         const { dispatch } = this.props
 
         dispatch({
-            type: 'infostudent/fetch',
+            type: 'infoteacher/fetch',
         })
     }
     render() {
@@ -76,25 +72,25 @@ export default class TableList extends Component {
         };
 
 
+
         const EditableTable = () => {
-            const studentInfoData = [];
+            const teacherInfoData = [];
 
-
-            this.props.infostudent.studentInfoData && this.props.infostudent.studentInfoData.map(item => {
-                studentInfoData.push(item)
+            this.props.infoteacher.teacherInfoData && this.props.infoteacher.teacherInfoData.map(item => {
+                teacherInfoData.push(item)
             })
 
             const [form] = Form.useForm();
-            const [data, setData] = useState(studentInfoData);
+            const [data, setData] = useState(teacherInfoData);
             const [editingKey, setEditingKey] = useState('');
 
-            const isEditing = (record) => record.studentId === editingKey;
+            const isEditing = (record) => record.teacherId === editingKey;
 
             const edit = (record) => {
                 form.setFieldsValue({
                     ...record,
                 });
-                setEditingKey(record.studentId);
+                setEditingKey(record.teacherId);
             };
 
 
@@ -107,7 +103,7 @@ export default class TableList extends Component {
                 try {
                     const row = await form.validateFields();
                     const newData = [...data];
-                    const index = newData.findIndex((item) => key === item.studentId);
+                    const index = newData.findIndex((item) => key === item.teacherId);
 
                     if (index > -1) {
                         const item = newData[index];
@@ -125,19 +121,13 @@ export default class TableList extends Component {
                         if (item.IdCard === row.IdCard) values.push(item)
                     })
 
-                    //console.log(values);
-
                     const { dispatch } = this.props
-
-                    let response = await updstudent(values)
-                    console.log(response);
+                    let response = await updteacher(values)
                     if (response.code == 200) {
                         dispatch({
-                            type: 'infostudent/fetch',
+                            type: 'infoteacher/fetch',
                         })
                     }
-
-
 
                 } catch (errInfo) {
                     console.log('Validate Failed:', errInfo);
@@ -147,10 +137,10 @@ export default class TableList extends Component {
             const del = async (record) => {
                 const { dispatch } = this.props
 
-                let response = await delstudent(record)
+                let response = await delteacher(record)
                 if (response.code == 200) {
                     dispatch({
-                        type: 'infostudent/fetch',
+                        type: 'infoteacher/fetch',
                     })
                 }
 
@@ -158,14 +148,14 @@ export default class TableList extends Component {
 
             const columns = [
                 {
-                    title: '学号',
-                    dataIndex: 'studentNumber',
+                    title: '教工号',
+                    dataIndex: 'teacherNumber',
                     width: '8%',
                     editable: true,
                 },
                 {
                     title: '姓名',
-                    dataIndex: 'studentName',
+                    dataIndex: 'teacherName',
                     width: '10%',
                     editable: true,
                 },
@@ -183,8 +173,8 @@ export default class TableList extends Component {
                     editable: true,
                 },
                 {
-                    title: '年级',
-                    dataIndex: 'state',
+                    title: '学院',
+                    dataIndex: 'institute',
                     width: '8%',
                     editable: true,
                 },
@@ -201,15 +191,21 @@ export default class TableList extends Component {
                     editable: true,
                 },
                 {
-                    title: '学院专业',
-                    dataIndex: 'institute',
-                    width: '18%',
+                    title: '毕业学校',
+                    dataIndex: 'school',
+                    width: '15%',
                     editable: true,
                 },
                 {
-                    title: '班级',
-                    dataIndex: 'studentClass',
-                    width: '12%',
+                    title: '学历',
+                    dataIndex: 'educational',
+                    width: '8%',
+                    editable: true,
+                },
+                {
+                    title: '入职时间',
+                    dataIndex: 'entryTime',
+                    width: '10%',
                     editable: true,
                 },
                 {
@@ -220,7 +216,7 @@ export default class TableList extends Component {
                         return editable ? (
                             <span>
                                 <Typography.Link
-                                    onClick={() => save(record.studentId)}
+                                    onClick={() => save(record.teacherId)}
                                     style={{
                                         marginRight: 8,
                                     }}
@@ -282,14 +278,14 @@ export default class TableList extends Component {
         };
 
 
-        const onSearch = (value = '') => {
+        const onSearch = async (value = '') => {
             const { dispatch } = this.props
 
             dispatch({
-                type: 'infostudent/fetchSearch',
+                type: 'infoteacher/fetchSearch',
                 payload: value
             }).then(() => {
-                if (value && this.props.infostudent.noFind == 1) {
+                if (value && this.props.infoteacher.noFind == 1) {
                     message.error('没有这个用户')
                 }
             })
@@ -305,21 +301,17 @@ export default class TableList extends Component {
         }
 
         const getData = async (values) => {
-
-            values.studentId = nanoid()
-
+            values.teacherId = nanoid()
             this.state.dataAdd.push(values)
+
+            let response = await addteacher(values)
 
             const { dispatch } = this.props
 
-            let response = await addstudent(values)
-            console.log(response);
             if (response.code == 200) {
                 dispatch({
-                    type: 'infostudent/fetch',
+                    type: 'infoteacher/fetch',
                 })
-            } else {
-                message.error('添加失败')
             }
 
 
@@ -328,19 +320,19 @@ export default class TableList extends Component {
 
         return (
             <Fragment>
-                <h1 className={styles.title}>学生信息查询</h1>
+                <h1 className={styles.title}>教师信息查询</h1>
                 <Button
                     type='primary'
                     style={{ float: 'right', marginRight: '10px' }}
                     onClick={() => this.setState({
                         showAdd: true
                     })}
-                >添加学生
+                >添加教师
                 </Button>
                 {
                     this.state.showAdd == true
                         ?
-                        <Addstudent showAdd={this.state.showAdd} onClose={onClose} getData={getData}></Addstudent>
+                        <Addteacher showAdd={this.state.showAdd} onClose={onClose} getData={getData}></Addteacher>
                         :
                         null
                 }

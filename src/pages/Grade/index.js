@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-export default function Grade() {
-  return (
-    <div>Grade</div>
-  )
+export default class Grade extends Component {
+  render() {
+    return (
+      <div>Grade</div>
+    )
+  }
 }

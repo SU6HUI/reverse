@@ -5,9 +5,9 @@ import CheckWorkTable from './work_detail/table'
 
 import { connect } from 'dva';
 
-@connect(({ findwork, loading }) => ({
-  findwork,
-  loading: loading.models.findwork
+@connect(({ infowork, loading }) => ({
+  infowork,
+  loading: loading.models.infowork
 }))
 export default class CheckWork extends Component {
   state = {
@@ -17,10 +17,10 @@ export default class CheckWork extends Component {
     const { dispatch } = this.props
 
     dispatch({
-      type: 'findwork/fetch',
+      type: 'infowork/fetch',
     }).then(() => {
       this.setState({
-        workData: this.props.findwork.workData
+        workData: this.props.infowork.workData
       })
     })
   }
@@ -32,16 +32,16 @@ export default class CheckWork extends Component {
       const { dispatch } = this.props
 
       dispatch({
-        type: 'findwork/delfetch',
+        type: 'infowork/delfetch',
         payload: {
           id
         }
       }).then(() => {
         dispatch({
-          type: 'findwork/fetch',
+          type: 'infowork/fetch',
         }).then(() => {
           this.setState({
-            workData: this.props.findwork.workData
+            workData: this.props.infowork.workData
           })
         })
       })
