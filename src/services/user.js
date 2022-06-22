@@ -1,5 +1,29 @@
 /* eslint-disable */
-import { request } from 'umi';
+import request from './request';
+
+
+// request.interceptors.request.use((url, options) => {
+//   const headers = {
+//     "Content-Type": "application/json",
+//     "authorization": localStorage.getItem('token')
+//   }
+//   return {
+//     url, options: { ...options, headers, interceptors: true }
+//   }
+// })
+
+/**
+ * 登录
+ */
+export async function loginUser(params) {
+  return request('/api/users/loginuser', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(params)
+  })
+}
 
 /**获取学生信息 */
 export async function infostudent() {
@@ -55,7 +79,7 @@ export async function updpassword(params) {
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify(params.values[0])
+    body: JSON.stringify(params)
   })
 }
 
@@ -68,7 +92,7 @@ export async function infoteacher() {
 
 /**添加教师信息 */
 export async function addteacher(params) {
-  console.log(params);
+  //console.log(params);
   return request('/api/users/addteacher', {
     method: 'POST',
     headers: {
@@ -107,3 +131,77 @@ export async function searchteacher(keywords) {
     method: 'GET',
   })
 }
+
+/**获取管理员信息 */
+export async function infomanager() {
+  return request(`/api/users/infomanager`, {
+    method: 'GET',
+  })
+}
+
+/**添加管理员信息 */
+export async function addmanager(params) {
+  //console.log(params);
+  return request('/api/users/addmanager', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(params)
+  })
+}
+
+/**修改管理员信息 */
+export async function updmanager(params) {
+  return request('/api/users/updmanager', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(params[0])
+  })
+}
+
+/**删除管理员信息 */
+export async function delmanager(params) {
+  //console.log(params);
+  return request('/api/users/delmanager', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(params)
+  })
+}
+
+/**查找管理员信息 */
+export async function searchmanager(keywords) {
+  return request(`/api/users/infomanager?keywords=${keywords}`, {
+    method: 'GET',
+  })
+}
+
+/**更改教师密码 */
+export async function updpassword_teacher(params) {
+  console.log(params);
+  return request('/api/users/updpwd_teacher', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(params)
+  })
+}
+
+
+/**更改管理员密码 */
+export async function updpassword_manager(params) {
+  return request('/api/users/updpwd_manager', {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(params)
+  })
+}
+

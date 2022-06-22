@@ -5,6 +5,9 @@ import CheckWorkTable from './work_detail/table'
 
 import { connect } from 'dva';
 
+//要根据教师id显示作业
+//用router window.open容易xxxx
+
 @connect(({ infowork, loading }) => ({
   infowork,
   loading: loading.models.infowork
@@ -25,7 +28,7 @@ export default class CheckWork extends Component {
     })
   }
   openDetail = (id) => {
-    window.open('/checkwork/info?id=' + id, '_blank')
+    window.open('/checkwork/info?id=' + id, '_self')
   }
   render() {
     const delWork = id => {

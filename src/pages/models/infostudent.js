@@ -1,4 +1,4 @@
-import { infostudent, delstudent, updstudent, searchstudent, addstudent } from '@/services/user'
+import { infostudent, searchstudent } from '@/services/user'
 
 
 export default {
@@ -24,7 +24,7 @@ export default {
 
         *fetchSearch({ payload }, { call, put }) {
             const response = yield call(searchstudent, payload)
-            console.log(response);
+            //console.log(response);
 
             if (response.code === 200) {
                 yield put({

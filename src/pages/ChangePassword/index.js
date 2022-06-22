@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import { connect } from 'dva';
 import styles from './index.less'
-import { Form, Input, Button, Checkbox, Modal, message } from 'antd';
-
+import { Form, Input, Button, Checkbox, Modal, message, Select } from 'antd';
+import { updpassword, updpassword_teacher, updpassword_manager } from '@/services/user'
 
 @connect(({ updpwd, loading }) => ({
   updpwd,
@@ -17,9 +17,9 @@ export default class ChangePassword extends Component {
   formRef = React.createRef();
 
   render() {
-    const info = []
+    let info
     const onFinish = (values) => {
-      info.push(values)
+      info = values
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -36,36 +36,33 @@ export default class ChangePassword extends Component {
       })
     }
 
-    const handleOk = () => {
+    const handleOk = async () => {
+      let response
+      if (info.type == 0) {
+        info.studentName = info.name
+        response = await updpassword(info)
+      } else if (info.type == 1) {
+        info.teacherName = info.name
+        response = await updpassword_teacher(info)
+      } else {
+        info.managerName = info.name
+        response = await updpassword_manager(info)
+      }
 
-      const { dispatch } = this.props
 
-      dispatch({
-        type: 'updpwd/fetch',
-        payload: {
-          values: info
-        }
-      }).then(() => {
-        if (this.props.updpwd.ok == 1) {
-          message.success('密码重置成功', 3);
-        } else if (this.props.updpwd.ok == 0) {
-          message.error('密码重置失败，请检查身份证号和名字是否正确', 3)
-        }
-      })
+      if (response.code == 200) {
+        message.success('密码重置成功', 3)
+        onReset()
+      }
+      else {
+        message.error('密码重置失败，请检查身份证号和名字是否正确', 3)
+        onReset()
+      }
+
 
       this.setState({
         showAlert: false
       })
-
-      // setTimeout(() => {
-      //   console.log(this.props);
-      //   if (this.props.updpwd.ok == 1) {
-      //     message.success('密码重置成功', 3);
-      //   } else if (this.props.updpwd.ok == 0) {
-      //     message.error('密码重置失败，请检查身份证号是否正确', 3)
-      //   }
-      // }, 500)
-
 
     }
     return (
@@ -100,7 +97,7 @@ export default class ChangePassword extends Component {
 
             <Form.Item
               label="姓名"
-              name="studentName"
+              name="name"
               rules={[
                 {
                   required: true,
@@ -109,6 +106,26 @@ export default class ChangePassword extends Component {
               ]}
             >
               <Input />
+            </Form.Item>
+
+            <Form.Item
+              name="type"
+              label="身份"
+              rules={[
+                {
+                  required: true,
+                  message: '请输入身份!',
+                },
+              ]}
+            >
+              <Select
+                allowClear
+                style={{ width: 100 }}
+              >
+                <Option value="0">学生</Option>
+                <Option value="1">教师</Option>
+                <Option value="2">管理员</Option>
+              </Select>
             </Form.Item>
 
             <Form.Item
@@ -152,7 +169,7 @@ export default class ChangePassword extends Component {
             </Form.Item>
           </Form >
         </div>
-      </Fragment>
+      </Fragment >
 
     )
   }

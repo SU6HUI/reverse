@@ -130,7 +130,7 @@ export default class TableList extends Component {
                     const { dispatch } = this.props
 
                     let response = await updstudent(values)
-                    console.log(response);
+                    //console.log(response);
                     if (response.code == 200) {
                         dispatch({
                             type: 'infostudent/fetch',

@@ -88,6 +88,10 @@ export default [
     path: '/checkwork/info',
     component: './CheckWork/work_detail/table'
   },
+  {
+    path: '/checkwork/commit',
+    component: './CheckWork/commitwork'
+  },
   //3
   {
     name: '作业互评',
@@ -123,10 +127,16 @@ export default [
     component: './ChangePassword',
   },
   {
+    name: 'test',
+    icon: 'table',
+    path: '/test',
+    component: './Test',
+  },
+  {
     path: '/',
     redirect: '/welcome',
   },
   {
     component: './404',
-  },
+  }
 ];

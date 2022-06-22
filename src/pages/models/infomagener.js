@@ -1,16 +1,18 @@
-import { infoteacher, searchteacher } from '@/services/user'
+import { infomanager, searchmanager } from '@/services/user'
+
 
 export default {
-    namespace: 'infoteacher',
+    namespace: 'infomanager',
     state: {
-        teacherInfoData: [],
+        managerInfoData: [],
         noFind: 0 //1表示查询失败
     },
     effects: {
         *fetch({ payload }, { call, put }) {
-            const response = yield call(infoteacher, payload)
-            //console.log(response);
-            if (response.code == 200) {
+            //console.log(payload);
+            const response = yield call(infomanager, payload)
+
+            if (response.code === 200) {
                 yield put({
                     type: 'find',
                     payload: {
@@ -19,8 +21,9 @@ export default {
                 })
             }
         },
+
         *fetchSearch({ payload }, { call, put }) {
-            const response = yield call(searchteacher, payload)
+            const response = yield call(searchmanager, payload)
             console.log(response);
 
             if (response.code === 200) {
@@ -40,20 +43,20 @@ export default {
                 })
             }
         },
-
     },
     reducers: {
         find(state, action) {
-            state.teacherInfoData = []
+            state.managerInfoData = []
             state.noFind = action.payload.noFind
             action.payload.data.map(item => {
-                state.teacherInfoData.push(item)
+                state.managerInfoData.push(item)
             })
             return {
-                teacherInfoData: state.teacherInfoData,
+                managerInfoData: state.managerInfoData,
                 noFind: state.noFind, //1为失败
             }
         },
 
     }
+
 }

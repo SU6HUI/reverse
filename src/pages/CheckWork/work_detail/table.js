@@ -20,6 +20,11 @@ export default class CheckWorkTable extends Component {
             }
         })
     }
+    openDetail = () => {
+        let value = window.location.search
+        let id = value.split('=')[1]
+        window.open('/checkwork/commit?id=' + id, '_self')
+    }
 
     render() {
         //console.log(this.props.infowork);
@@ -45,7 +50,11 @@ export default class CheckWorkTable extends Component {
                                 <td>{this.props.infowork.data.standard}</td>
                             </tr>
                         </table>}
-                    <Button type="primary" className={styles.btn}>点击上传</Button>
+                    <Button
+                        type="primary"
+                        className={styles.btn}
+                        onClick={(e) => this.openDetail(e)}
+                    >点击上传</Button>
                 </div>
             </Fragment>
         )

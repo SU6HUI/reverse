@@ -20,7 +20,7 @@ const tailLayout = {
     },
 };
 
-const Addstudent = (props) => {
+const Addstudent = (props, context, b) => {
 
     const [form] = Form.useForm();
     const [close, setClose] = useState(false)

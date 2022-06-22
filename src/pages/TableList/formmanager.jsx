@@ -20,7 +20,7 @@ const tailLayout = {
     },
 };
 
-const Addteacher = (props) => {
+const Addmanager = (props) => {
 
     const [form] = Form.useForm();
     const [close, setClose] = useState(false)
@@ -38,9 +38,9 @@ const Addteacher = (props) => {
 
     return (
         <Fragment className={styles.stddiv}>
-            <Form {...layout} form={form} name="control-hooks" onFinish={onFinish} className={styles.stdform} style={{ height: 650 }}>
+            <Form {...layout} form={form} name="control-hooks" onFinish={onFinish} className={styles.stdform}>
                 <Form.Item
-                    name="teacherNumber"
+                    name="managerNumber"
                     label="教工号"
                     rules={[
                         {
@@ -51,7 +51,7 @@ const Addteacher = (props) => {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    name="teacherName"
+                    name="managerName"
                     label="姓名"
                     rules={[
                         {
@@ -145,6 +145,13 @@ const Addteacher = (props) => {
                     <Input />
                 </Form.Item>
 
+                <Form.Item
+                    name="position"
+                    label="职位"
+                >
+                    <Input />
+                </Form.Item>
+
 
 
 
@@ -188,4 +195,4 @@ const Addteacher = (props) => {
     );
 };
 
-export default Addteacher;
+export default Addmanager;

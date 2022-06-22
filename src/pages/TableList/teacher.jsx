@@ -285,6 +285,7 @@ export default class TableList_teacher extends Component {
                 type: 'infoteacher/fetchSearch',
                 payload: value
             }).then(() => {
+                //console.log(this.props.infoteacher.noFind);
                 if (value && this.props.infoteacher.noFind == 1) {
                     message.error('没有这个用户')
                 }
@@ -336,7 +337,7 @@ export default class TableList_teacher extends Component {
                         :
                         null
                 }
-                <Search placeholder="请输入学生姓名" onSearch={onSearch} className={styles.ipt} />
+                <Search placeholder="请输入教师姓名" onSearch={onSearch} className={styles.ipt} />
                 <EditableTable className={styles.table} />
             </Fragment>
         )
